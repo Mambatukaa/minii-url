@@ -11,22 +11,41 @@ import { useCopyToClipboard } from 'usehooks-ts';
 
 function App() {
   const [longUrl, setLongUrl] = useState<string>('');
-  const [shortUrl, setShortUrl] = useState<string>('-----');
+  const [shortUrl, setShortUrl] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
   const [, copy] = useCopyToClipboard();
 
   const [copied, setCopied] = useState(false);
 
   const fetchShortUrl = async () => {
     console.log('Shorten URL', shortUrl);
+    setLoading(true);
+
+    if (!validateUrl(longUrl)) {
+      setLoading(false);
+      alert('Invalid URL');
+      return;
+    }
+
+    setTimeout(() => {
+      setLoading(false);
+    }, 5000);
+
     setShortUrl('https://short.url/abc123');
   };
 
+  const validateUrl = (value: string): boolean => {
+    return /^(?:(?:(?:https?|ftp):)?\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:[/?#]\S*)?$/i.test(
+      value
+    );
+  };
+
   return (
-    <div id="contact" className="flex h-screen justify-center items-center">
-      <div className="container h-[80%] flex flex-row rounded-xl shadow-lg justify-center items-center bg-gray-900">
+    <div id="contact" className="flex h-screen justify-center items-center ">
+      <div className="container h-[80%] flex flex-row rounded-xl shadow-lg justify-center items-center bg-[url('assets/background/bg-7.jpg')]">
         <div className="flex flex-col w-1/2">
           <div className="">
-            <h1 className="font-serif text-xl text-gray-200 text-center">
+            <h1 className="font-sans text-xl text-gray-200 text-center">
               The Simplest URL Shortner You Were Waiting For
             </h1>
 
@@ -37,7 +56,7 @@ function App() {
                 </div>
 
                 <input
-                  className="text-gray-300 h-10 font-serif w-full p-3 ps-10 placeholder-gray-700 bg-gray-900 border border-gray-700 rounded-lg leading-tight"
+                  className="text-gray-300 h-10 font-sans w-full p-3 ps-10 placeholder-gray-700 bg-gray-900 border border-gray-700 rounded-lg leading-tight"
                   type="url"
                   placeholder="Enter your link here..."
                   value={longUrl}
@@ -50,7 +69,11 @@ function App() {
                 type="button"
                 onClick={() => fetchShortUrl()}
               >
-                <ArrowPathIcon className="h-5 w-5 text-gray-300" />
+                <ArrowPathIcon
+                  className={`${
+                    loading ? 'animate-spin' : ''
+                  } h-5 w-5 text-gray-300`}
+                />
               </Button>
             </div>
 
@@ -58,13 +81,13 @@ function App() {
               <Link
                 to={shortUrl}
                 target="_blank"
-                className="ps-5 font-serif flex items-center bg-gray-900 border border-gray-700 rounded-lg w-[78%] leading-tight text-blue-300"
+                className="ps-5 font-sans flex items-center bg-gray-900 border border-gray-700 rounded-lg w-[78%] leading-tight text-blue-300"
               >
                 {shortUrl}
               </Link>
 
               <Button
-                className="flex font-serif items-center justify-center gap-3 p-2 border border-gray-700 rounded-lg shadow bg-gray-900 w-[20%] text-sm font-semibold text-gray-400"
+                className="flex font-sans items-center justify-center gap-3 p-2 border border-gray-700 rounded-lg shadow bg-gray-900 w-[20%] text-sm font-semibold text-gray-400"
                 onClick={() => {
                   copy('Hello world');
                   setCopied(true);
