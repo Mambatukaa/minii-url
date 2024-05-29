@@ -41,7 +41,10 @@ function App() {
   };
 
   return (
-    <div id="contact" className="flex h-screen justify-center items-center ">
+    <div
+      id="contact"
+      className="flex h-screen justify-center items-center bg-[url('assets/background/bg-6.jpg')]"
+    >
       <div className="container h-[80%] flex flex-row rounded-xl shadow-lg justify-center items-center bg-[url('assets/background/bg-7.jpg')]">
         <div className="flex flex-col w-1/2">
           <div className="">
