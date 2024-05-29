@@ -12,6 +12,15 @@ export default withMT({
         'bg-4': "url('assets/background/bg-3.jpg')",
         'bg-5': "url('assets/background/bg-3.jpg')",
         'bg-6': "url('assets/background/bg-6.jpg')"
+      },
+      animation: {
+        border: 'border 4s ease infinite'
+      },
+      keyframes: {
+        border: {
+          '0%, 100%': { backgroundPosition: '0% 50%' },
+          '50%': { backgroundPosition: '100% 50%' }
+        }
       }
     }
   },
