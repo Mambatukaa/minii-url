@@ -20,17 +20,9 @@ func DbConnection() {
 	DB_PASSWORD := os.Getenv("DB_PASSWORD")
 	DATABASE := os.Getenv("DATABASE")
 
-	fmt.Println(DB_HOST)
-	fmt.Println(DB_USER)
-	fmt.Println(DB_PASSWORD)
-	fmt.Println(DATABASE)
+	fmt.Println("Connecting to DB...")
 
 	ctx := context.Background()
-
-	if DATABASE == "" {
-		fmt.Fprintf(os.Stderr, "Make sure your DB connection url okay? URL: %v", DATABASE)
-		os.Exit(1)
-	}
 
 	var connectionString string = fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=require", DB_HOST, DB_USER, DB_PASSWORD, DATABASE)
 
@@ -40,6 +32,15 @@ func DbConnection() {
 
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
+		os.Exit(1)
+	}
+
+	var greeting string
+
+	err = dbpool.QueryRow(context.Background(), "SELECT 'Hello, world!'").Scan(&greeting)
+
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "DB connection error 🔴🔴🔴 %v\n", err)
 		os.Exit(1)
 	}
 

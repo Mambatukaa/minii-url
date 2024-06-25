@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -13,38 +14,82 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+
+	"url-shortener/internal/db"
 )
 
-func main() {
+func init() {
 	err := godotenv.Load()
 
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
 
+	// db connection
+	db.DbConnection()
+}
+
+func main() {
 	PORT := os.Getenv("PORT")
-
-	conn, err := pgx.Connect(context.Background(), os.Getenv("DATABASE_URL"))
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
-		os.Exit(1)
-	}
-	defer conn.Close(context.Background())
-
-	var greeting string
-	err = conn.QueryRow(context.Background(), "select 'Hello, world!'").Scan(&greeting)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "QueryRow failed: %v\n", err)
-		os.Exit(1)
-	}
-
-	fmt.Println(greeting)
 
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
+
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("welcome"))
 	})
 
+	r.Post("/url", createUrl)
+
 	http.ListenAndServe(fmt.Sprintf(":%s", PORT), r)
+	db.CloseDBPool()
+}
+
+type UrlRequest struct {
+	LongUrl string `json:"longUrl"`
+}
+
+func createUrl(w http.ResponseWriter, r *http.Request) {
+	db := db.GetDBPool()
+
+	fmt.Println("Creating short URL")
+
+	var urlRequest UrlRequest
+
+	err := json.NewDecoder(r.Body).Decode(&urlRequest)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	fmt.Println("Long URL: ", urlRequest.LongUrl)
+
+	query := "SELECT id FROM url"
+
+	var rows pgx.Rows
+
+	rows, err = db.Query(context.Background(), query)
+
+	fmt.Println("URL: ", rows)
+
+	// defer rows.Close()
+
+	// for rows.Next() {
+	// 	var id int
+	// 	err = rows.Scan(&id)
+	// 	if err != nil {
+	// 		fmt.Println("Error: ", err)
+	// 	}
+	// 	fmt.Println("ID: ", id)
+
+	// }
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	// w.Header().Set("Content-Type", "application/json")
+
 }
