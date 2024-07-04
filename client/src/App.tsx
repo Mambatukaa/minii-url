@@ -35,7 +35,7 @@ function App() {
       //   LongUrl: longUrl
       // });
 
-      setShortUrl(`https://www.tinyUrl.com/222`);
+      setShortUrl(`https://www.miniiurl.com/222`);
 
       setIsNewLink(true);
 
@@ -57,26 +57,26 @@ function App() {
 
   return (
     <div className="flex h-screen justify-center items-center bg-dark-gray">
-      <div className="relative container h-[80%] flex flex-col rounded-xl shadow-lg items-center opacity-4 bg-dark-primary">
-        <h1 className="absolute top-52 text-6xl font-bold text-light-primary font-breeSerif">
+      <div className="relative container mx-5 h-[80%] flex flex-col rounded-xl shadow-lg items-center opacity-4 bg-dark-primary">
+        <h1 className="absolute md:top-52 top-20 text-6xl font-bold text-light-primary font-breeSerif">
           MiniiURL
         </h1>
 
-        <div className="flex flex-col w-1/2 m-auto">
+        <div className="flex flex-col mx-4 md:w-1/2 m-auto">
           <h1 className="text-lg text-light-primary text-center font-robotoCondensed">
             MiniiURL minimizes your URLs into short, manageable links for simple
             sharing.
           </h1>
 
           <div className="flex flex-row justify-between my-5 h-11">
-            <div className={`relative w-[89%]`}>
+            <div className={`relative w-full`}>
               <div className="absolute inset-y-0 start-0 flex items-center ps-4 pointer-events-none">
                 <LinkIcon className="h-4 w-4 text-dark-secondary" />
               </div>
 
               <input
                 autoFocus={true}
-                className="h-11 font-sans w-full p-3 ps-10 placeholder-dark-primary bg-bg-light border border-dark-tertiary rounded-lg leading-tight"
+                className="h-11 font-sans w-full p-3 ps-10 placeholder-dark-primary bg-light-primary border border-dark-tertiary rounded-lg leading-tight"
                 type="url"
                 placeholder="Enter your link here..."
                 value={longUrl}
@@ -86,7 +86,7 @@ function App() {
 
             <Button
               disabled={isLoading || !longUrl}
-              className={`clickable w-[9%] bg-dark-tertiary hover:bg-dark-primary ${
+              className={`clickable ml-2 w-[15%] lg:w-[10%] bg-dark-tertiary hover:bg-dark-primary ${
                 isLoading || !longUrl ? 'opacity-40 cursor-not-allowed' : ''
               }`}
               type="button"
@@ -104,7 +104,7 @@ function App() {
             <Link
               to={shortUrl}
               target="_blank"
-              className={`ps-5 font-sans flex items-center bg-dark-tertiary hover:bg-dark-primary border border-dark-700 rounded-lg w-[78%] leading-tight text-url-blue hover:underline 
+              className={`ps-5 font-sans flex items-center bg-dark-tertiary hover:bg-dark-primary border border-dark-700 rounded-lg w-full leading-tight text-url-blue hover:underline 
                 
                 ${
                   isNewLink
@@ -119,7 +119,7 @@ function App() {
 
             <Button
               disabled={!shortUrl}
-              className={`clickable gap-3 p-2 text-sm w-[20%] bg-dark-tertiary hover:bg-dark-primary ${
+              className={`clickable ml-2 lg:gap-2 p-2 text-sm w-[15%] bg-dark-tertiary hover:bg-dark-primary ${
                 !shortUrl ? 'opacity-40 cursor-not-allowed' : ''
               }`}
               onClick={() => {
@@ -131,12 +131,12 @@ function App() {
               {copied ? (
                 <>
                   <CheckIcon className="h-4 w-4 text-light-secondary" />
-                  Copied
+                  <p className="hidden lg:block">Copied</p>
                 </>
               ) : (
                 <>
-                  <ClipboardIcon className="h-4 w-4 text-light-secondary" />
-                  Copy Link
+                  <ClipboardIcon className="h-4 w-4 text-white" />
+                  <p className="hidden lg:block">Copy</p>
                 </>
               )}
             </Button>
