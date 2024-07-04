@@ -1,9 +1,9 @@
 package dbModels
 
 type Url struct {
-	ID       int    `json:"id"`
-	ShortUrl string `json:"shortUrl"`
-	LongUrl  string `json:"longUrl"`
+	ID      int    `json:"id"`
+	Code    string `json:"code"`
+	LongUrl string `json:"longUrl"`
 }
 
 type LongUrl struct {
