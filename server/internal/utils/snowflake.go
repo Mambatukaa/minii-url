@@ -113,7 +113,17 @@ func CodeGenerator() (string, error) {
 	}
 
 	// Code generator function
-	worker := NewWorker(5, 5)
+	machineID, err := strconv.ParseInt(MACHINE_ID, 10, 64)
+	if err != nil {
+		return "", err
+	}
+
+	dataCenterID, err := strconv.ParseInt(DATA_CENTER_ID, 10, 64)
+	if err != nil {
+		return "", err
+	}
+
+	worker := NewWorker(machineID, dataCenterID)
 
 	id, err := worker.NextID()
 
