@@ -8,7 +8,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { Button } from '@material-tailwind/react';
 import { useCopyToClipboard } from 'usehooks-ts';
-// import axios from 'axios';
+import axios from 'axios';
 
 function App() {
   const [longUrl, setLongUrl] = useState<string>('');
@@ -20,8 +20,13 @@ function App() {
 
   const [copied, setCopied] = useState(false);
 
+  const apiUrl = import.meta.env.VITE_REACT_APP_API_URL;
+
+  if (!apiUrl) {
+    throw new Error('API URL is not set');
+  }
+
   const fetchShortUrl = async () => {
-    console.log('Shorten URL', shortUrl);
     setLoading(true);
 
     if (!validateUrl(longUrl)) {
@@ -31,11 +36,11 @@ function App() {
     }
 
     try {
-      // const { data } = await axios.post('http://localhost:8000/url', {
-      //   LongUrl: longUrl
-      // });
+      const { data } = await axios.post(`${apiUrl}/url`, {
+        LongUrl: longUrl
+      });
 
-      setShortUrl(`https://www.miniiurl.com/222`);
+      setShortUrl(`${apiUrl}/${data}`);
 
       setIsNewLink(true);
 
@@ -43,6 +48,7 @@ function App() {
         setIsNewLink(false);
       }, 3000);
     } catch (error) {
+      alert('An error occurred. Please try again later.');
       console.error(error);
     } finally {
       setLoading(false);
