@@ -2,6 +2,8 @@ package utils
 
 import (
 	"errors"
+	"fmt"
+	"os"
 	"strconv"
 	"sync"
 	"time"
@@ -18,6 +20,7 @@ import (
 
 		1 41 5 5 12
 */
+
 // Basic Constants
 const (
 	workerIDBits     = uint64(5) // 5bit workerID out of 10bit worker machine ID
@@ -32,6 +35,9 @@ const (
 	dataLeft = uint8(17) // dataLeft = dataCenterIDBits + sequenceBits
 	workLeft = uint8(12) // workLeft = sequenceBits // Node IDx offset to the left
 
+	// twepoch is the time of the Twepoch (2022-04-06 06:20:40)
+	// The time of the Twepoch is the starting point of the snowflake algorithm
+	// The snowflake algorithm uses a 64-bit integer to represent a unique ID
 	twepoch = int64(1659674040000) // constant timestamp (milliseconds)
 )
 
@@ -92,20 +98,38 @@ func (w *Worker) nextID() (uint64, error) {
 	return uint64(id), nil
 }
 
+var (
+	worker *Worker
+)
+
 // Generate a code for the short URL
 func CodeGenerator() (string, error) {
-	// Code generator function
-	w := NewWorker(5, 5)
+	MACHINE_ID := os.Getenv("MACHINE_ID")
+	DATA_CENTER_ID := os.Getenv("DATA_CENTER_ID")
 
-	id, err := w.NextID()
+	if MACHINE_ID == "" || DATA_CENTER_ID == "" {
+		fmt.Fprintf(os.Stderr, "MACHINE_ID or DATA_CENTER_ID is not set to start snowflake worker\n")
+		os.Exit(1)
+	}
+
+	// Code generator function
+	worker := NewWorker(5, 5)
+
+	id, err := worker.NextID()
 
 	if err != nil {
 		return "", err
 	}
+
+	fmt.Println("Snowflake UNIQUE ID GENERATOR is connected. 🟢 Initial ID:", Base64(id))
 
 	return Base64(id), nil
 }
 
 func Base64(id uint64) string {
 	return strconv.FormatUint(id, 36)
+}
+
+func GetWorker() *Worker {
+	return worker
 }
