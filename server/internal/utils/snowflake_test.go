@@ -36,9 +36,23 @@ func TestSnowflake(t *testing.T) {
 		}
 		// store id as key in map
 		m[id] = i
-		fmt.Println("snowflake ID:", id)
 	}
 	// successfully generated snowflake ID
 	fmt.Println("All", len(m), "snowflake ID Get successed!")
+
+}
+
+func TestSnowflakeWorker(t *testing.T) {
+	t.Setenv("MACHINE_ID", "1")
+	t.Setenv("DATA_CENTER_ID", "1")
+
+	id, err := CodeGenerator()
+
+	if err != nil {
+		t.Errorf("Error: %v", err)
+	}
+
+	// successfully generated snowflake ID
+	fmt.Println("id", id, "snowflake initial ID Get successed!")
 
 }
