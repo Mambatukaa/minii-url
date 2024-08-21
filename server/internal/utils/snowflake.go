@@ -123,7 +123,7 @@ func CodeGenerator() (string, error) {
 		return "", err
 	}
 
-	worker := NewWorker(machineID, dataCenterID)
+	worker = NewWorker(machineID, dataCenterID)
 
 	id, err := worker.NextID()
 
