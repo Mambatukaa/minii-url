@@ -8,13 +8,14 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
 
-	"url-shortener/internal/db"
+	database "url-shortener/internal/db"
 	"url-shortener/internal/utils"
 )
 
@@ -26,14 +27,23 @@ func init() {
 	}
 
 	// db connection
-	db.DbConnection()
+	database.DbConnection()
+
+	// Snowflake code generator
+	utils.CodeGenerator()
 }
 
 func main() {
 	PORT := os.Getenv("PORT")
 
+	if PORT == "" {
+		PORT = "8000"
+	}
+
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
+
+	db := database.GetDBPool()
 
 	r.Use(cors.Handler(cors.Options{
 		// AllowedOrigins:   []string{"https://foo.com"}, // Use this to allow specific origin hosts
@@ -52,63 +62,84 @@ func main() {
 		w.Write([]byte("welcome"))
 	})
 
-	r.Post("/url", createUrl)
+	r.Post("/url", func(w http.ResponseWriter, r *http.Request) {
+		createUrl(w, r, db)
+	})
 
+	r.Get("/{code}", func(w http.ResponseWriter, r *http.Request) {
+		handleRedirect(w, r, db)
+	})
+
+	fmt.Println("Server is running on port", PORT, "🚀🚀🚀")
 	http.ListenAndServe(fmt.Sprintf(":%s", PORT), r)
-	db.CloseDBPool()
+	database.CloseDBPool()
 }
 
 type UrlRequest struct {
 	LongUrl string `json:"longUrl"`
 }
 
-func createUrl(w http.ResponseWriter, r *http.Request) {
-	print("creating url.....................................")
-	db := db.GetDBPool()
-
+func createUrl(w http.ResponseWriter, r *http.Request, db *pgxpool.Pool) {
 	var urlRequest UrlRequest
 
 	err := json.NewDecoder(r.Body).Decode(&urlRequest)
 
-	fmt.Println("--------------------", urlRequest)
-
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
 	}
 
 	query := "SELECT code FROM url WHERE long_url = $1"
 
 	row := db.QueryRow(context.Background(), query, urlRequest.LongUrl)
 
-	var code string
+	var decodedCode string
 
-	err = row.Scan(&code)
+	row.Scan(&decodedCode)
 
-	if err != nil {
+	fmt.Println("decodedCode ---------------------- :", decodedCode)
+
+	if decodedCode == "" {
+		worker := utils.GetWorker()
+
+		code, err := worker.NextID()
+
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		decodedCode = utils.Base64(code)
+
 		query = "INSERT INTO url (long_url, code) VALUES ($1, $2) RETURNING code"
 
-		code, err = utils.CodeGenerator(urlRequest.LongUrl)
+		_, err = db.Exec(context.Background(), query, urlRequest.LongUrl, decodedCode)
+
+		fmt.Print(err, "err ----------------------")
 
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-
-		err = db.QueryRow(context.Background(), query, urlRequest.LongUrl, code).Scan(&code)
-
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
-
 	}
+
+	fmt.Println("decodedCode 2222222222222222222222 :", decodedCode)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK) // Explicitly setting the status code to 200
-	w.Write([]byte(code))
+	w.Write([]byte(decodedCode))
 }
 
-func CodeGenerator(s string) {
-	panic("unimplemented")
+func handleRedirect(w http.ResponseWriter, r *http.Request, db *pgxpool.Pool) {
+	code := chi.URLParam(r, "code")
+
+	query := "SELECT long_url FROM url WHERE code = $1"
+	var longUrl string
+	err := db.QueryRow(context.Background(), query, code).Scan(&longUrl)
+
+	if err != nil {
+		http.Error(w, "URL not found", http.StatusNotFound)
+		return
+	}
+
+	http.Redirect(w, r, longUrl, http.StatusSeeOther)
 }

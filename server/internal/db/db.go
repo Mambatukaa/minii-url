@@ -44,7 +44,7 @@ func DbConnection() {
 		os.Exit(1)
 	}
 
-	fmt.Println("DB connection successfully. 🚀")
+	fmt.Println("DB connection successfully. 🟢🟢🟢")
 }
 
 func GetDBPool() *pgxpool.Pool {
