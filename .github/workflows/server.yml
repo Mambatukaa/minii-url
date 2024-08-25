@@ -17,7 +17,8 @@ jobs:
 
       - name: Build the Go app
         run: |
-          cd server/cmd
+          cd server
+          cd cmd
           go build -o ../build/go-app.exe -v
 
       - name: Deploy to Azure Web App
