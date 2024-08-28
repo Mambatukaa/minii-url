@@ -20,10 +20,10 @@ function App() {
 
   const [copied, setCopied] = useState(false);
 
-  const apiUrl = import.meta.env.VITE_REACT_APP_API_URL;
+  let apiUrl = import.meta.env.VITE_REACT_APP_API_URL;
 
   if (!apiUrl) {
-    throw new Error('API URL is not set');
+    apiUrl = 'http://localhost:8000';
   }
 
   const fetchShortUrl = async () => {
