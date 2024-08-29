@@ -4,8 +4,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
-
 @layer components {
   .clickable {
     @apply flex items-center justify-center border rounded-lg shadow text-sm font-semibold
