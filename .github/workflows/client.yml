@@ -6,10 +6,12 @@ on:
       - main
     paths:
       - 'client/**'
+      - '.github/workflows/client.yml'
   pull_request:
     types: [opened, synchronize, reopened, closed]
     branches:
       - main
+env: VITE_REACT_APP_API_URL="http://localhost:8000"
 
 jobs:
   build_and_deploy_job:
