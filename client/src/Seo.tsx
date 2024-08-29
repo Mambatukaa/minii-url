@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet';
 const SEO = () => {
   const title = 'Minii URL Shortener';
   const description = 'A simple URL shortener';
-  const imageUrl = '../assets/images/og.png';
+  const imageUrl = '/assets/images/og.png';
 
   return (
     <Helmet>
