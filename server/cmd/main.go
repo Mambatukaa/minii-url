@@ -35,6 +35,7 @@ func init() {
 
 func main() {
 	PORT := os.Getenv("PORT")
+	MAIN_APP_URL := os.Getenv("MAIN_APP_URL")
 
 	if PORT == "" {
 		PORT = "8000"
@@ -47,7 +48,7 @@ func main() {
 
 	r.Use(cors.Handler(cors.Options{
 		// AllowedOrigins:   []string{"https://foo.com"}, // Use this to allow specific origin hosts
-		AllowedOrigins: []string{"https://*", "http://*"},
+		AllowedOrigins: []string{MAIN_APP_URL},
 		// AllowOriginFunc:  func(r *http.Request, origin string) bool { return true },
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
