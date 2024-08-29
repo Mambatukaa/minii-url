@@ -14,6 +14,7 @@ on:
 
 env:
   VITE_REACT_APP_API_URL: ${{ secrets.VITE_REACT_APP_API_URL }}
+  VITE_REACT_APP_URL: ${{ secrets.VITE_REACT_APP_URL }}
 
 jobs:
   build_and_deploy_job:

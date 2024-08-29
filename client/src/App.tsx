@@ -21,6 +21,7 @@ function App() {
   const [copied, setCopied] = useState(false);
 
   const apiUrl = import.meta.env.VITE_REACT_APP_API_URL;
+  const appUrl = import.meta.env.VITE_REACT_APP_URL;
 
   if (!apiUrl) {
     throw new Error('API URL is not set');
@@ -40,7 +41,7 @@ function App() {
         LongUrl: longUrl
       });
 
-      setShortUrl(`${apiUrl}/${data}`);
+      setShortUrl(`${appUrl}/${data}`);
 
       setIsNewLink(true);
 
