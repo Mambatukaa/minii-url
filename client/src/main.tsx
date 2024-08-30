@@ -5,7 +5,7 @@ import App from './App.tsx';
 import './index.css';
 import SEO from './Seo';
 import RedirectHandler from './RedirectHandler';
-import About from './About.tsx';
+import NotFound from './NotFound.tsx';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -14,7 +14,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <Routes>
         <Route path="/" Component={App} />
         <Route path="/:id" Component={RedirectHandler} />
-        <Route path="/about" Component={About} />
+        <Route path="/not-found" Component={NotFound} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>

@@ -14,9 +14,10 @@ export default function RedirectHandler() {
       })
       .catch(error => {
         console.log(error);
+        window.location.href = '/not-found';
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return <div>Page not found.</div>;
+  return null;
 }
