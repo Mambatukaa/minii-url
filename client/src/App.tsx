@@ -63,7 +63,7 @@ function App() {
   };
 
   return (
-    <div className="flex h-screen justify-center items-center bg-dark-gray">
+    <div className="flex h-screen justify-center items-center bg-blue-gradient">
       <div className="relative container mx-5 h-[80%] flex flex-col rounded-xl shadow-lg items-center opacity-4 bg-dark-primary">
         <h1 className="absolute md:top-52 top-20 text-6xl font-bold text-light-primary font-breeSerif">
           MiniiURL
