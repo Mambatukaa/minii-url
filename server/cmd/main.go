@@ -97,8 +97,6 @@ func createUrl(w http.ResponseWriter, r *http.Request, db *pgxpool.Pool) {
 
 	row.Scan(&decodedCode)
 
-	fmt.Println("decodedCode ---------------------- :", decodedCode)
-
 	if decodedCode == "" {
 		worker := utils.GetWorker()
 
@@ -115,15 +113,11 @@ func createUrl(w http.ResponseWriter, r *http.Request, db *pgxpool.Pool) {
 
 		_, err = db.Exec(context.Background(), query, urlRequest.LongUrl, decodedCode)
 
-		fmt.Print(err, "err ----------------------")
-
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 	}
-
-	fmt.Println("decodedCode 2222222222222222222222 :", decodedCode)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK) // Explicitly setting the status code to 200
@@ -142,5 +136,7 @@ func handleRedirect(w http.ResponseWriter, r *http.Request, db *pgxpool.Pool) {
 		return
 	}
 
-	http.Redirect(w, r, longUrl, http.StatusSeeOther)
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK) // Explicitly setting the status code to 200
+	w.Write([]byte(longUrl))
 }
