@@ -5,11 +5,11 @@ WORKDIR /miniiurl
 # technically you dont need to copy all the files. ONLY the go stuff. But I was being lazy
 COPY . .
 # this downloads all the dependencies that you have in the code
-RUN go get
+RUN cd cmd && go get
 # or
 # RUN go mod download
 # create the binary/executable. The name does not have to bin e.g. you can name it mylittlebunny
-RUN go build -o bin .
+RUN cd cmd && go build -o bin .
 
 # tell docker which binary is your application
-ENTRYPOINT [ "/miniiurl/bin" ]
+ENTRYPOINT [ "/miniiurl/cmd/bin" ]
