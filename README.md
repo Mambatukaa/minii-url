@@ -14,31 +14,36 @@ This project is a URL shortener application, consisting of server and client fol
 
 1. Navigate to the `client` folder:
 
-```sh
-cd client
-```
+   ```sh
+   cd client
+   ```
 
-2. Install dependencies using either Yarn or npm:
+2. Copy the sample environment file and configure it:
+   ```sh
+   cp .env.sample .env
+   ```
 
-```sh
-yarn install
-# or
-npm install
-```
+3. Install dependencies using either Yarn or npm:
 
-3. Start the development server:
+   ```sh
+   yarn install
+   # or
+   npm install
+   ```
 
-```sh
-yarn dev
-# or
-npm run dev
-```
+4. Start the development server:
+
+   ```sh
+   yarn dev
+   # or
+   npm run dev
+   ```
 
 ### Server Side
 
-1. Navigate to the `server` folder:
+1. Navigate to the `server/cmd` folder:
    ```sh
-   cd server
+   cd server/cmd
    ```
 2. Copy the sample environment file and configure it:
    ```sh
@@ -46,7 +51,7 @@ npm run dev
    ```
 3. Run the server:
    ```sh
-   go run cmd/main.go
+   go run main.go
    ```
 
 ### Additional Information
