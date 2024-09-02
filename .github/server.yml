@@ -1,0 +1,36 @@
+name: minii url server workflow
+
+on: 
+  push:
+    branches:
+      - main
+    paths:
+      - 'server/**'
+      - '.github/workflows/server.yml'
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches:
+      - main
+    paths:
+      - 'server/**'
+      - '.github/workflows/server.yml'
+
+jobs:
+  server:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with: 
+          submodules: true
+          lfs: false
+      
+      - name: Build Docker image
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main')
+
+        run: |
+          cd server
+          echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+          docker build . -t mambatukaa/miniiurl:latest
+          docker push mambatukaa/miniiurl
+      
