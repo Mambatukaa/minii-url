@@ -1,6 +1,6 @@
 name: minii url server workflow
 
-on: 
+on:
   push:
     branches:
       - main
@@ -21,10 +21,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-        with: 
+        with:
           submodules: true
           lfs: false
-      
+
       - name: Build Docker image
         if: github.event_name == 'push' && (github.ref == 'refs/heads/main')
 
@@ -33,4 +33,3 @@ jobs:
           echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
           docker build . -t mambatukaa/miniiurl:latest
           docker push mambatukaa/miniiurl
-      
