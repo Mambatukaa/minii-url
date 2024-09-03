@@ -27,14 +27,13 @@ func init() {
 
 func main() {
 	PORT := os.Getenv("PORT")
-	APP_URL := os.Getenv("APP_URL")
-
-	print(PORT, APP_URL)
+	API_URL := os.Getenv("API_URL")
 
 	if PORT == "" {
 		PORT = "8000"
-		APP_URL = "https://miniiurl.site"
 	}
+
+	fmt.Print("API_URL: ", API_URL, "\n")
 
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
@@ -55,7 +54,7 @@ func main() {
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK) // Explicitly setting the status code to 200
-		w.Write([]byte(APP_URL))
+		w.Write([]byte("Welcome to MiniURL"))
 	})
 
 	r.Post("/url", func(w http.ResponseWriter, r *http.Request) {
