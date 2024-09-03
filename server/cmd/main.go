@@ -27,9 +27,13 @@ func init() {
 
 func main() {
 	PORT := os.Getenv("PORT")
+	APP_URL := os.Getenv("APP_URL")
+
+	print(PORT, APP_URL)
 
 	if PORT == "" {
 		PORT = "8000"
+		APP_URL = "https://miniiurl.site"
 	}
 
 	r := chi.NewRouter()
@@ -39,7 +43,7 @@ func main() {
 
 	r.Use(cors.Handler(cors.Options{
 		// AllowedOrigins:   []string{"https://foo.com"}, // Use this to allow specific origin hosts
-		AllowedOrigins: []string{"https://miniiurl.site", "https://www.miniiurl.site"},
+		AllowedOrigins: []string{"https://www.miniiurl.site"},
 		// AllowOriginFunc:  func(r *http.Request, origin string) bool { return true },
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
@@ -51,7 +55,7 @@ func main() {
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK) // Explicitly setting the status code to 200
-		w.Write([]byte("welcome"))
+		w.Write([]byte(APP_URL))
 	})
 
 	r.Post("/url", func(w http.ResponseWriter, r *http.Request) {
