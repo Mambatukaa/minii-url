@@ -4,10 +4,12 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/joho/godotenv"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -18,6 +20,16 @@ import (
 )
 
 func init() {
+	APP_ENV := os.Getenv("APP_ENV")
+
+	if APP_ENV != "development" {
+		err := godotenv.Load()
+
+		if err != nil {
+			log.Fatal("Error loading .env file")
+		}
+	}
+
 	// db connection
 	database.DbConnection()
 
@@ -27,13 +39,7 @@ func init() {
 
 func main() {
 	PORT := os.Getenv("PORT")
-	API_URL := os.Getenv("API_URL")
-
-	if PORT == "" {
-		PORT = "8000"
-	}
-
-	fmt.Print("API_URL: ", API_URL, "\n")
+	MAIN_APP_DOMAIN := os.Getenv("MAIN_APP_DOMAIN")
 
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
@@ -42,7 +48,7 @@ func main() {
 
 	r.Use(cors.Handler(cors.Options{
 		// AllowedOrigins:   []string{"https://foo.com"}, // Use this to allow specific origin hosts
-		AllowedOrigins: []string{"https://www.miniiurl.site"},
+		AllowedOrigins: []string{MAIN_APP_DOMAIN},
 		// AllowOriginFunc:  func(r *http.Request, origin string) bool { return true },
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
@@ -54,7 +60,7 @@ func main() {
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK) // Explicitly setting the status code to 200
-		w.Write([]byte("Welcome to MiniURL"))
+		w.Write([]byte(`{"message": "Welcome to MiniiURL API"}`))
 	})
 
 	r.Post("/url", func(w http.ResponseWriter, r *http.Request) {
