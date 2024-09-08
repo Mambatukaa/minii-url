@@ -18,9 +18,11 @@ extension QLLink {
   
   @NSManaged public var shortUrl: String?
   @NSManaged public var longUrl: String?
-  
+  @NSManaged public var timestamp: Date?
+
   var wrappedShortUrl: URL {  URL(string: shortUrl!)!  }
   var wrappedLongUrl: URL { URL(string: longUrl!)! }
+  var wrappedTimestamp: Date { timestamp! }
 }
 
 extension QLLink : Identifiable {

@@ -3,5 +3,6 @@
     <entity name="QLLink" representedClassName="QLLink" syncable="YES">
         <attribute name="longUrl" optional="YES" attributeType="String"/>
         <attribute name="shortUrl" optional="YES" attributeType="String"/>
+        <attribute name="timestamp" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
     </entity>
 </model>

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CF0913442C8D622700056BA7 /* LRUCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF0913432C8D622700056BA7 /* LRUCache.swift */; };
 		CF0B26552C88B42100FBBB4A /* MiniiURLApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF0B26542C88B42100FBBB4A /* MiniiURLApp.swift */; };
 		CF0B26572C88B42100FBBB4A /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF0B26562C88B42100FBBB4A /* ContentView.swift */; };
 		CF0B26592C88B42300FBBB4A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CF0B26582C88B42300FBBB4A /* Assets.xcassets */; };
@@ -22,6 +23,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		CF0913432C8D622700056BA7 /* LRUCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LRUCache.swift; sourceTree = "<group>"; };
 		CF0B26512C88B42100FBBB4A /* MiniiURL.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MiniiURL.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CF0B26542C88B42100FBBB4A /* MiniiURLApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniiURLApp.swift; sourceTree = "<group>"; };
 		CF0B26562C88B42100FBBB4A /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -79,6 +81,7 @@
 				CF0B26622C88B42300FBBB4A /* MiniiURL.entitlements */,
 				CF0B265A2C88B42300FBBB4A /* Preview Content */,
 				CF0B26682C88B4C500FBBB4A /* PopoverView.swift */,
+				CF0913432C8D622700056BA7 /* LRUCache.swift */,
 			);
 			path = MiniiURL;
 			sourceTree = "<group>";
@@ -184,6 +187,7 @@
 				CF0B265E2C88B42300FBBB4A /* Persistence.swift in Sources */,
 				CF0B26572C88B42100FBBB4A /* ContentView.swift in Sources */,
 				CF0B26772C88B97700FBBB4A /* StatusBarController.swift in Sources */,
+				CF0913442C8D622700056BA7 /* LRUCache.swift in Sources */,
 				CF0B26842C88BE0E00FBBB4A /* QLLink+CoreDataClass.swift in Sources */,
 				CF0B26852C88BE0E00FBBB4A /* QLLink+CoreDataProperties.swift in Sources */,
 				CF0B26692C88B4C500FBBB4A /* PopoverView.swift in Sources */,

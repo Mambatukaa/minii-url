@@ -35,8 +35,8 @@ struct MyActionButtonStyle: ButtonStyle {
 
 struct URLItemView: View {
   // Dynamic properties that you can pass into the component
-  var mainURL: String
-  var subURL: String
+  var longURL: String
+  var shortURL: String
   var copyAction: () -> Void
   var deleteAction: () -> Void
   
@@ -47,11 +47,11 @@ struct URLItemView: View {
     VStack {
       HStack {
         VStack(alignment: .leading) {
-          Text(AttributedString(mainURL))
+          Text(AttributedString(shortURL))
             .foregroundStyle(.black)
             .frame(maxWidth: .infinity, alignment: .leading)
           
-          Text(AttributedString(subURL))
+          Text(AttributedString(longURL))
             .foregroundStyle(.gray)
             .frame(maxWidth: .infinity, alignment: .leading)
             .font(.caption)
@@ -105,8 +105,68 @@ struct URLItemView: View {
   }
 }
 
+
+struct URLItemListView: View {
+  // FetchRequest sorted by timestamp in descending order (newest first)
+  @FetchRequest(
+    sortDescriptors: [NSSortDescriptor(keyPath: \QLLink.timestamp, ascending: false)]
+  ) var links: FetchedResults<QLLink>
+  
+  @Environment(\.managedObjectContext) private var viewContext
+  
+  @State private var contentHeight: CGFloat = .zero // Track the content height
+  
+  
+  var body: some View {
+    ScrollView(showsIndicators: false) {
+      VStack {
+        ForEach(links) { link in
+          URLItemView(
+            longURL: link.wrappedLongUrl.absoluteString,
+            shortURL: link.wrappedShortUrl.absoluteString,
+            copyAction: {
+              // Copy action logic
+              NSPasteboard.general.clearContents()
+              NSPasteboard.general.setString(link.wrappedShortUrl.absoluteString, forType: .string)
+              AppDelegate.popover.performClose(nil)
+            },
+            deleteAction: {
+              viewContext.delete(link)
+              
+              do {
+                try viewContext.save() // Save the context to persist the deletion
+              } catch {
+                // Handle error (e.g., show an alert or log the error)
+                print("Failed to delete the item: \(error.localizedDescription)")
+              }
+            }
+          ).background(GeometryReader { geometry in
+            Color.clear.onAppear {
+              print("size:", contentHeight, geometry.size.height)
+              contentHeight += geometry.size.height
+              
+              if contentHeight > 200 {
+                contentHeight = 200
+              }
+            }
+          })
+        }
+      }
+    }.frame(height: min(contentHeight, 200)) // ScrollView will expand to content height but max 400
+      .onAppear {
+        // Reset content height on appearance to recalculate
+        contentHeight = .zero
+      }
+    
+  }
+}
+
 struct PopoverView: View {
   @Environment(\.managedObjectContext) var viewContext
+  
+  var cacheManager: CacheManager {
+    return CacheManager(context: viewContext)
+  }
   
   @FetchRequest(sortDescriptors: [])
   var links: FetchedResults<QLLink>
@@ -117,7 +177,7 @@ struct PopoverView: View {
   func isValidURL(urlString: String) -> Bool {
     
     let regex = #"((http|https):\/\/)?(www\.)?([a-zA-Z0-9-]+\.)+([a-zA-Z]{2,})(\/[a-zA-Z0-9#?&=._-]*)*\/?"#
-
+    
     let predicate = NSPredicate(format:"SELF MATCHES %@", regex)
     return predicate.evaluate(with: urlString)
   }
@@ -172,108 +232,13 @@ struct PopoverView: View {
         Button(action:{
           // Send request to the api
           // sendPostRequest()
-          
-          if !responseData.isEmpty {
-            let qllink = QLLink(context: viewContext)
-            
-            qllink.shortUrl = "https://miniiurl.site/" + responseData
-            qllink.longUrl = linkURL
-            
-            try? viewContext.save()
-            
-          }
-          
-          print(links, "Hello", responseData)
+          cacheManager.setLink(shortUrl: linkURL, forLongUrl: linkURL)
         }) {
           Text("Shorten").font(.title2).bold()
         }.buttonStyle(MyActionButtonStyle()).padding(.horizontal, 8).padding(.bottom, 4)
       }
       
-      ForEach(links) { link in
-        URLItemView(
-          mainURL: "https://miniiurl.site/",
-          subURL: "https://stackoverflow.com/questions/62649566/add-variable-to-url-in-swift",
-          copyAction: {
-            // Copy action logic
-            NSPasteboard.general.clearContents()
-            NSPasteboard.general.setString("https://miniiurl.site", forType: .string)
-            AppDelegate.popover.performClose(nil)
-          },
-          deleteAction: {
-            viewContext.delete(link)
-            
-            do {
-              try viewContext.save() // Save the context to persist the deletion
-            } catch {
-              // Handle error (e.g., show an alert or log the error)
-              print("Failed to delete the item: \(error.localizedDescription)")
-            }
-          }
-        )
-        
-        
-        //        VStack {
-        //          HStack() {
-        //            VStack {
-        //              Text(AttributedString("https://miniiurl.site/")).foregroundStyle(.black).frame(maxWidth: .infinity, alignment: .leading)
-        //
-        //              Text(AttributedString("https://stackoverflow.com/questions/62649566/add-variable-to-url-in-swift")).foregroundStyle(.gray).frame(maxWidth: .infinity, alignment: .leading).font(.caption)
-        //            }.padding(10)
-        //
-        //            HStack {
-        //
-        //              Button(action: {
-        //
-        //                NSPasteboard.general.clearContents()
-        //                NSPasteboard.general.setString("https://miniiurl.site", forType: .string)
-        //
-        //                AppDelegate.popover.performClose(nil)
-        //
-        //              }) {
-        //                Image(systemName: "doc.on.doc")
-        //                  .foregroundColor(isHoveringCopy ? .blue : Color(.lightGray)) // Change color on hover
-        //                  .onHover { hovering in
-        //                    isHoveringCopy = hovering
-        //
-        //                    DispatchQueue.main.async { //<-- Here
-        //                      if (self.isHoveringTrash) {
-        //                        NSCursor.pointingHand.push()
-        //                      } else {
-        //                        NSCursor.pop()
-        //                      }
-        //                    }
-        //
-        //                  }
-        //              }.buttonStyle(PlainButtonStyle())
-        //
-        //              Button(action: {
-        //                viewContext.delete(link)
-        //
-        //              }) {
-        //                Image(systemName: "trash")
-        //                  .foregroundColor(isHoveringTrash ? .red : Color(.lightGray)) // Change color on hover
-        //                  .onHover { hovering in
-        //                    isHoveringTrash = hovering
-        //                    DispatchQueue.main.async { //<-- Here
-        //                      if (self.isHoveringTrash) {
-        //                        NSCursor.pointingHand.push()
-        //                      } else {
-        //                        NSCursor.pop()
-        //                      }
-        //                    }
-        //
-        //                  }
-        //              }.buttonStyle(PlainButtonStyle())
-        //
-        //
-        //            }.padding(.trailing, 10)
-        //
-        //
-        //          }.background(.gray.opacity(0.4)).frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/).cornerRadius(8).padding([.horizontal, .bottom])
-        //
-        //        }
-      }
-      
+      URLItemListView()
       
     }.padding(.bottom, 12).background(.white)
     
