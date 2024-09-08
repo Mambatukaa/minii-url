@@ -11,20 +11,18 @@ import CoreData
 
 
 extension QLLink {
-
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<QLLink> {
-        return NSFetchRequest<QLLink>(entityName: "QLLink")
-    }
-
-    @NSManaged public var title: String?
-    @NSManaged public var id: UUID?
-    @NSManaged public var url: String?
   
-    var wrappedID: UUID { id! }
-    var wrappedTitle: String { title! }
-    var wrappedURL: URL { URL(string: url!)! }
+  @nonobjc public class func fetchRequest() -> NSFetchRequest<QLLink> {
+    return NSFetchRequest<QLLink>(entityName: "QLLink")
+  }
+  
+  @NSManaged public var shortUrl: String?
+  @NSManaged public var longUrl: String?
+  
+  var wrappedShortUrl: URL {  URL(string: shortUrl!)!  }
+  var wrappedLongUrl: URL { URL(string: longUrl!)! }
 }
 
 extension QLLink : Identifiable {
-
+  
 }
