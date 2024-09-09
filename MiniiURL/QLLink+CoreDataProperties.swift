@@ -16,12 +16,12 @@ extension QLLink {
     return NSFetchRequest<QLLink>(entityName: "QLLink")
   }
   
-  @NSManaged public var shortUrl: String?
-  @NSManaged public var longUrl: String?
+  @NSManaged public var shortURL: String?
+  @NSManaged public var longURL: String?
   @NSManaged public var timestamp: Date?
 
-  var wrappedShortUrl: URL {  URL(string: shortUrl!)!  }
-  var wrappedLongUrl: URL { URL(string: longUrl!)! }
+  var wrappedShortURL: URL {  URL(string: shortURL!)!  }
+  var wrappedLongURL: URL { URL(string: longURL!)! }
   var wrappedTimestamp: Date { timestamp! }
 }
 

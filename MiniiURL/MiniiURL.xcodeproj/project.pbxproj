@@ -19,7 +19,10 @@
 		CF0B26772C88B97700FBBB4A /* StatusBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF0B26762C88B97700FBBB4A /* StatusBarController.swift */; };
 		CF0B26842C88BE0E00FBBB4A /* QLLink+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF0B26822C88BE0E00FBBB4A /* QLLink+CoreDataClass.swift */; };
 		CF0B26852C88BE0E00FBBB4A /* QLLink+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF0B26832C88BE0E00FBBB4A /* QLLink+CoreDataProperties.swift */; };
-		CFF30C962C8B70800019BF56 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CFF30C952C8B70800019BF56 /* Info.plist */; };
+		CF344F512C8E6FB200DD63E8 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF344F502C8E6FB200DD63E8 /* APIService.swift */; };
+		CF344F532C8E761000DD63E8 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF344F522C8E761000DD63E8 /* Utils.swift */; };
+		CF344F552C8E93F500DD63E8 /* SoundTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF344F542C8E93F500DD63E8 /* SoundTest.swift */; };
+		CFD0D05A2C8D7CCF00E41E76 /* Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = CFD0D0592C8D7CCF00E41E76 /* Config.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,7 +40,10 @@
 		CF0B26762C88B97700FBBB4A /* StatusBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarController.swift; sourceTree = "<group>"; };
 		CF0B26822C88BE0E00FBBB4A /* QLLink+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "QLLink+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
 		CF0B26832C88BE0E00FBBB4A /* QLLink+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "QLLink+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
-		CFF30C952C8B70800019BF56 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CF344F502C8E6FB200DD63E8 /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
+		CF344F522C8E761000DD63E8 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		CF344F542C8E93F500DD63E8 /* SoundTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundTest.swift; sourceTree = "<group>"; };
+		CFD0D0592C8D7CCF00E41E76 /* Config.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Config.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,7 +60,7 @@
 		CF0B26482C88B42000FBBB4A = {
 			isa = PBXGroup;
 			children = (
-				CFF30C952C8B70800019BF56 /* Info.plist */,
+				CFD0D0592C8D7CCF00E41E76 /* Config.plist */,
 				CF0B26532C88B42100FBBB4A /* MiniiURL */,
 				CF0B26522C88B42100FBBB4A /* Products */,
 			);
@@ -81,6 +87,9 @@
 				CF0B26622C88B42300FBBB4A /* MiniiURL.entitlements */,
 				CF0B265A2C88B42300FBBB4A /* Preview Content */,
 				CF0B26682C88B4C500FBBB4A /* PopoverView.swift */,
+				CF344F542C8E93F500DD63E8 /* SoundTest.swift */,
+				CF344F522C8E761000DD63E8 /* Utils.swift */,
+				CF344F502C8E6FB200DD63E8 /* APIService.swift */,
 				CF0913432C8D622700056BA7 /* LRUCache.swift */,
 			);
 			path = MiniiURL;
@@ -170,9 +179,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CFD0D05A2C8D7CCF00E41E76 /* Config.plist in Resources */,
 				CF0B265C2C88B42300FBBB4A /* Preview Assets.xcassets in Resources */,
 				CF0B26592C88B42300FBBB4A /* Assets.xcassets in Resources */,
-				CFF30C962C8B70800019BF56 /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -185,14 +194,17 @@
 			files = (
 				CF0B26742C88B94700FBBB4A /* AppDelegate.swift in Sources */,
 				CF0B265E2C88B42300FBBB4A /* Persistence.swift in Sources */,
+				CF344F552C8E93F500DD63E8 /* SoundTest.swift in Sources */,
 				CF0B26572C88B42100FBBB4A /* ContentView.swift in Sources */,
 				CF0B26772C88B97700FBBB4A /* StatusBarController.swift in Sources */,
+				CF344F512C8E6FB200DD63E8 /* APIService.swift in Sources */,
 				CF0913442C8D622700056BA7 /* LRUCache.swift in Sources */,
 				CF0B26842C88BE0E00FBBB4A /* QLLink+CoreDataClass.swift in Sources */,
 				CF0B26852C88BE0E00FBBB4A /* QLLink+CoreDataProperties.swift in Sources */,
 				CF0B26692C88B4C500FBBB4A /* PopoverView.swift in Sources */,
 				CF0B266C2C88B7D900FBBB4A /* MiniiURL.xcdatamodeld in Sources */,
 				CF0B26552C88B42100FBBB4A /* MiniiURLApp.swift in Sources */,
+				CF344F532C8E761000DD63E8 /* Utils.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -329,6 +341,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"MiniiURL/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -354,6 +367,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"MiniiURL/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

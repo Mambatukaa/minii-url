@@ -17,13 +17,15 @@ class StatusBarController {
     self.popover = popover
     statusBar = .init()
     
-    
     statusItem = statusBar.statusItem(withLength: NSStatusItem.variableLength)
     
     if let button = statusItem.button {
-      button.image = NSImage(systemSymbolName: "house", accessibilityDescription: nil)
-      button.action = #selector(showApp(sender: ))
-      button.target = self
+      
+      let image = NSImage(named: "CWC")
+          button.image = image
+          
+          button.action = #selector(showApp(sender:))
+          button.target = self
     }
   }
   

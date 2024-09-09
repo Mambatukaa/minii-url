@@ -6,12 +6,12 @@
 //
 
 import SwiftUI
+import AppKit
 
 
 struct MyActionButtonStyle: ButtonStyle {
   
   @State private var hover: Bool = false
-  
   
   func makeBody(configuration: Configuration) -> some View {
     configuration.label
@@ -122,12 +122,12 @@ struct URLItemListView: View {
       VStack {
         ForEach(links) { link in
           URLItemView(
-            longURL: link.wrappedLongUrl.absoluteString,
-            shortURL: link.wrappedShortUrl.absoluteString,
+            longURL: link.wrappedLongURL.absoluteString,
+            shortURL: link.wrappedShortURL.absoluteString,
             copyAction: {
               // Copy action logic
               NSPasteboard.general.clearContents()
-              NSPasteboard.general.setString(link.wrappedShortUrl.absoluteString, forType: .string)
+              NSPasteboard.general.setString(link.wrappedShortURL.absoluteString, forType: .string)
               AppDelegate.popover.performClose(nil)
             },
             deleteAction: {
@@ -171,73 +171,100 @@ struct PopoverView: View {
   @FetchRequest(sortDescriptors: [])
   var links: FetchedResults<QLLink>
   
-  @State private var linkURL: String = ""
-  @State private var responseData: String = ""
+  @State private var longURL: String = ""
+  @State private var shortURLCode: String = "NONE"
+  
+  @State private var isLoading = false
+  @State private var showClearButton = false
+  
+  
   
   func isValidURL(urlString: String) -> Bool {
-    
     let regex = #"((http|https):\/\/)?(www\.)?([a-zA-Z0-9-]+\.)+([a-zA-Z]{2,})(\/[a-zA-Z0-9#?&=._-]*)*\/?"#
     
     let predicate = NSPredicate(format:"SELF MATCHES %@", regex)
     return predicate.evaluate(with: urlString)
   }
   
-  func sendPostRequest() {
-    guard let url = URL(string: "https://6b63-50-35-120-194.ngrok-free.app/url") else {
-      print("Invalid URL")
-      return
-    }
-    
-    var request = URLRequest(url: url)
-    
-    request.httpMethod = "POST"
-    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-    
-    
-    URLSession.shared.dataTask(with: request) { data, response, error in
-      if let error = error {
-        print("Error: \(error)")
-        return
-      }
-      
-      guard let data = data else {
-        print("No data")
-        return
-      }
-      
-      
-      // Convert data to string (or process it as JSON, etc.)
-      if let responseDataString = String(data: data, encoding: .utf8) {
-        DispatchQueue.main.async {
-          responseData = responseDataString
-          print("Response received: \(responseDataString)")
-          
-        }
-      }
-      
-      
-    }.resume()
-  }
-  
-  
   
   var body: some View {
     VStack() {
       
       HStack {
-        TextField("Copy an URL to shorten", text: $linkURL).disableAutocorrection(true).padding().background(.white).textFieldStyle(.plain).font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)}
+        TextField("Copy an URL to shorten", text: $longURL).onChange(of: longURL){
+          if showClearButton {
+            showClearButton = false
+          }
+          
+        }.disableAutocorrection(true).padding().background(.white).textFieldStyle(.plain).font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)}
       
-      if isValidURL(urlString: linkURL) {
-        // Shorten URL ACTION
-        Button(action:{
-          // Send request to the api
-          // sendPostRequest()
-          cacheManager.setLink(shortUrl: linkURL, forLongUrl: linkURL)
-        }) {
-          Text("Shorten").font(.title2).bold()
-        }.buttonStyle(MyActionButtonStyle()).padding(.horizontal, 8).padding(.bottom, 4)
+      if isValidURL(urlString: longURL) {
+        if !isLoading && !showClearButton {
+          // Shorten URL ACTION
+          Button(action:{
+            
+            // Start the loader
+            isLoading = true
+            
+            NSSound(named: "Blow")?.play()
+            
+            Task {
+              do {
+                let APP_URL = try Utils.shared.getConfigItem(name: "APP_URL")
+                
+                // Await the result of getShortUrlCode() and capture the short URL code
+                let shortURLCode = try await APIService.shared.getShortUrlCode(longURL: longURL)
+                
+                let shortUrl: String = (APP_URL) + "/" + shortURLCode
+                
+                NSPasteboard.general.setString(shortUrl, forType: .string)
+                
+                // Set the short URL code in the cache manager
+                cacheManager.setLink(shortURL: shortUrl, forLongURL: longURL)
+                
+                showClearButton = true
+                isLoading = false
+                
+              } catch {
+                // Handle any errors that occurred during getShortUrlCode
+                print("Failed to get short URL code: \(error)")
+                isLoading = false
+              }
+            }
+            
+            
+          }) {
+            Text("Shorten").font(.title2).bold()
+          }.buttonStyle(MyActionButtonStyle()).padding(.horizontal, 8).padding(.bottom, 4)
+          
+          
+        }
+        
+        // Show the loader while the task is running
+        if isLoading {
+          ProgressView()
+            .progressViewStyle(CircularProgressViewStyle()).padding(4)
+        }
+        
+        // Show the "Clear" button after the task is complete
+        if showClearButton {
+          Button(action: {
+            // Clear action
+            NSSound(named: "Basso")?.play()
+            
+            showClearButton = false  // Hide the Clear button
+            
+            longURL = ""
+          }) {
+            Text("Clear").font(.title2).bold()
+          }
+          .buttonStyle(MyActionButtonStyle())
+          .padding(.horizontal, 8)
+          .padding(.bottom, 4)
+        }
       }
       
+      // Render URL Items
       URLItemListView()
       
     }.padding(.bottom, 12).background(.white)
