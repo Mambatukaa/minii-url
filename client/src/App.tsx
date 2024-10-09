@@ -20,12 +20,23 @@ function App() {
 
   const [copied, setCopied] = useState(false);
 
+  console.log(copied, 'ahhahhaha');
+
   const apiUrl = import.meta.env.VITE_REACT_APP_API_URL;
   const appUrl = import.meta.env.VITE_REACT_APP_URL;
 
   if (!apiUrl) {
     throw new Error('API URL is not set');
   }
+
+  const copyUrl = () => {
+    setCopied(true);
+    copy(shortUrl);
+
+    setTimeout(() => {
+      setCopied(false);
+    }, 2000);
+  };
 
   const fetchShortUrl = async () => {
     setLoading(true);
@@ -130,8 +141,7 @@ function App() {
                 !shortUrl ? 'opacity-40 cursor-not-allowed' : ''
               }`}
               onClick={() => {
-                copy(shortUrl);
-                setCopied(true);
+                copyUrl();
               }}
               onMouseLeave={() => setCopied(false)}
             >
