@@ -61,6 +61,7 @@ struct URLItemView: View {
         HStack {
           // Copy Button
           Button(action: {
+            NSSound(named: "Blow")?.play()
             copyAction()
           }) {
             Image(systemName: "doc.on.doc")
@@ -128,7 +129,6 @@ struct URLItemListView: View {
               // Copy action logic
               NSPasteboard.general.clearContents()
               NSPasteboard.general.setString(link.wrappedShortURL.absoluteString, forType: .string)
-              AppDelegate.popover.performClose(nil)
             },
             deleteAction: {
               viewContext.delete(link)
